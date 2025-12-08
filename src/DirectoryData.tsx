@@ -1,22 +1,29 @@
 import { useEffect, useState } from "react";
-import { StoreLogin, StoreLogout } from "./store/authSlice";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { StoreLogin } from "./store/authSlice";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch } from "./store/hooks";
 import MyDriveBox from "./component/MyDriveBox";
-
-import dayjs from "dayjs";
 import StorageInfoCard from "./component/StorageInfoCard";
-import FileInfo from "./component/FileCard_UI/FileInfo";
-import FIleIcon from "./component/FileCard_UI/FIleIcon";
 import toast from "react-hot-toast";
-import { Button } from "@material-tailwind/react";
+import { Container, ThemeToggle } from "./components/ui";
+import { 
+  UserMenu, 
+  ActionButtons, 
+  FileUploadForm, 
+  FolderCreateForm, 
+  FileGrid, 
+  FolderGrid 
+} from "./components/dashboard";
 
 interface fileDataType {
+  _id: string;
   name: string;
   id: string;
   parent: string;
   extension: string;
   isPaid: boolean;
+  createdAt?: string;
+  size?: number;
 }
 
 export interface PathTypes {
@@ -24,12 +31,15 @@ export interface PathTypes {
   name: string;
 }
 interface directoryDataType {
+  _id: string;
   name: string;
   id: string;
   directories: directoryDataType[];
   files: fileDataType[];
   parent: string;
   path: PathTypes[];
+  createdAt?: string;
+  size?: number;
 }
 
 interface StorageInfoType {
@@ -37,7 +47,7 @@ interface StorageInfoType {
   usedStorage: number;
 }
 
-type createFilePropsType = "folder" | "file";
+type createFilePropsType = "folder" | "file" | null;
 
 const DirectoryData = () => {
   const { "*": dirname } = useParams();
@@ -91,6 +101,7 @@ const GetFileContent = async(fileID:string)=>{
 
   //upload new file
   const [uploadfile, setUploadfile] = useState<File | null>(null);
+  const [uploadProgress , setUploadProgress] = useState<number>(0)
   const handleUpload = async () => {
     if (!uploadfile || !files?.id) return;
 try {
@@ -100,16 +111,30 @@ try {
       }
     })
     const {postUrl,id} = await UrlData.json()
-  const s3Res = await fetch(postUrl, {method:"put",headers:{'Content-Type':`${uploadfile?.type}`},body:uploadfile })
-  if(s3Res?.status==200){
+  // const s3Res = await fetch(postUrl, {method:"put",headers:{'Content-Type':`${uploadfile?.type}`},body:uploadfile })
+const xhr = new XMLHttpRequest();
+const formData = new FormData()
+formData.append("file",uploadfile)
+xhr.open("put",postUrl)
+xhr.send(formData)
 
-    const serverRes = await fetch(`${base_url}/file/uploads/complete`,{
+xhr.upload.onprogress=(event)=>{
+  if(event.lengthComputable){
+    setUploadProgress(Math.floor((event.loaded/event.total)*100))
+  }
+}
+
+xhr.onload=async()=>{
+ if( xhr.status==200){
+  const serverRes = await fetch(`${base_url}/file/uploads/complete`,{
       method:"put", headers:{ "Content-Type": "application/json"},credentials:"include",body:JSON.stringify({fileId:`${id}`})
     })
 const json = await serverRes.json()
 toast.success(json?.msg)
-
-  }
+ }else{
+   toast.error("upload falied")
+ }
+}
     } catch (error) {
       console.log("error",error)
       toast.error("upload falied")
@@ -119,7 +144,7 @@ toast.success(json?.msg)
     }
   };
 
-
+useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
 
   
 
@@ -128,12 +153,11 @@ toast.success(json?.msg)
     const url = `${import.meta.env.VITE_SERVER_URL}/${fileType}/${id}`;
 
     try {
-      const data = await fetch(url, {
+      await fetch(url, {
         method: "DELETE",
         headers: { parentid: `${files?.id}` },
         credentials: "include",
       });
-      //const msg = await data.json()
       GetData();
     } catch (error) {
       console.log("error while delete the file", error);
@@ -165,16 +189,13 @@ toast.success(json?.msg)
     oldName: string | null;
     Id: string | null;
   }
-  interface popUoType {
-    message: string | null;
-    open: boolean;
-  }
+
   const [rename, setRename] = useState<renameObj>({
     newName: null,
     oldName: null,
     Id: null,
   });
-  const [popup, setPopup] = useState<popUoType>({ message: null, open: true });
+
 
   type parameterType = "file" | "directory";
 
@@ -190,11 +211,8 @@ toast.success(json?.msg)
         body: JSON.stringify({ newName: `${rename.newName}` }),
         credentials: "include",
       });
-      const json = await data.json();
-      if (json?.message) {
-        setPopup({ open: true, message: json.message });
-        GetData();
-      }
+      await data.json();
+      GetData();
     } catch (error) {
       console.log("error while renaming the file", error);
     } finally {
@@ -210,10 +228,9 @@ toast.success(json?.msg)
         method: "POST",
         credentials: "include",
       });
-      const json = await response.json();
+      await response.json();
       if (response.status == 200) {
         setFiles(null);
-        //dispatch(StoreLogout())
         navigate("/login");
       }
     } catch (error) {
@@ -254,289 +271,142 @@ toast.success(json?.msg)
   }, [dirname]);
 
   const [renameType, setRenameType] = useState<parameterType>("directory");
-  const [createFile, setCreateFile] = useState<createFilePropsType>("folder");
+  const [createFile, setCreateFile] = useState<createFilePropsType>(null);
   const [newDirname, setDirname] = useState<string | null>(null);
-  interface showDetailsType {
-    index: number | null;
-    active: boolean;
-  }
-  const [showDetails, setShowDetails] = useState<showDetailsType>({
-    active: false,
-    index: null,
-  });
   const [storageInfo, setStorageInfo] = useState<StorageInfoType>({
     totalStorage: 0,
     usedStorage: 0,
   });
-  const [fileDetailsPopup, setFIleDetailsPopup] = useState<string | null>(null);
 
   return (
-    <div className="bg-[#0f0f0f] text-white min-h-screen w-full px-6 py-10 relative">
-      <div className="absolute top-6 right-6">
-        <img
-          src="./userlogo.png"
-          className="h-10 w-10 cursor-pointer rounded-full ring-2 ring-white"
-          alt="user"
-          onClick={() => setUserLogo(!userLogo)}
-        />
-        {userLogo && (
-          <div className="absolute right-0 mt-2 bg-[#1f1f1f] text-white p-5 rounded-xl shadow-xl w-72 flex flex-col gap-4 z-50">
-            <div className="text-center">
-              <h2 className="text-lg font-semibold">{userInfo?.name}</h2>
-              <p className="text-sm text-gray-400">{userInfo?.email}</p>
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      {/* Header */}
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
+        <Container>
+          <div className="flex items-center justify-between h-16">
+            <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+              My Drive
+            </h1>
+            
+            <div className="flex items-center space-x-4">
+              <ThemeToggle />
+              
+              {/* User Menu */}
+              <div className="relative">
+                <img
+                  src="./userlogo.png"
+                  className="h-10 w-10 cursor-pointer rounded-full ring-2 ring-gray-200 dark:ring-gray-700 hover:ring-primary-500 transition-all"
+                  alt="user"
+                  onClick={() => setUserLogo(!userLogo)}
+                />
+                <UserMenu
+                  userInfo={userInfo}
+                  isOpen={userLogo}
+                  onClose={() => setUserLogo(false)}
+                  onLogout={handleLogout}
+                />
+              </div>
             </div>
-
-            <button
-              className={`w-full px-4 py-2 rounded-xl ${
-                userInfo?.emailVarified
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-red-600 hover:bg-red-700"
-              }`}
-              onClick={() =>
-                userInfo?.emailVarified ? null : navigate("/varifyEmali")
-              }
-            >
-              {userInfo?.emailVarified ? "Email Verified" : "Verify Email"}
-            </button>
-
-            {(userInfo?.role === "owner" || userInfo?.role === "admin") && (
-              <button
-                className="w-full bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl"
-                onClick={() => navigate("/adminPage")}
-              >
-                Go to Admin Page
-              </button>
-            )}
-
-            <button
-              className="w-full bg-gray-700 hover:bg-gray-800 px-4 py-2 rounded-xl"
-              onClick={() => navigate("/profile")}
-            >
-              Go to Profile
-            </button>
-
-            <button
-              className="w-full bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
           </div>
-        )}
-      </div>
+        </Container>
+      </header>
 
-      {/* Action Buttons */}
-      <div className="flex flex-wrap justify-center gap-6 mb-10">
-        <button
-          onClick={() => setCreateFile("folder")}
-          className="bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-xl text-white"
-        >
-          Create Folder
-        </button>
-        <button
-          onClick={() => setCreateFile("file")}
-          className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-xl text-white"
-        >
-          Upload File
-        </button>
-      </div>
-
-      {/* Folder Input */}
-      {createFile === "folder" && (
-        <div className="bg-[#1a1a1a] w-full max-w-xl mx-auto p-6 rounded-xl mb-10 flex flex-col gap-4 items-center shadow-lg">
-          <h2 className="text-xl font-medium">Create New Folder</h2>
-          <div className="flex w-full gap-3">
-            <input
-              type="text"
-              placeholder="Enter folder name"
-              className="flex-1 px-4 py-2 rounded-lg text-black"
-              onChange={(e) => setDirname(e.target.value)}
-            />
-            <button
-              onClick={createNewDir}
-              className="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-lg text-white"
-            >
-              Upload
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* File Upload Input */}
-      {createFile === "file" && (
-        <div className="bg-[#1a1a1a] w-full max-w-xl mx-auto p-6 rounded-xl mb-10 flex flex-col gap-4 items-center shadow-lg">
-          <h2 className="text-xl font-medium">Upload a File</h2>
-          {/* //TODO:make the file can upload multiple file once and show the progrees by using xhr */}
-          <input
-            type="file"
-            className="text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-violet-600 file:text-white hover:file:bg-violet-700"
-            onChange={(e) => {
-              if (e.target.files?.[0]) setUploadfile(e.target.files[0]);
-            }}
-          />
-          <button
-            onClick={handleUpload}
-            className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-lg text-white"
-          >
-            Upload
-          </button>
-        </div>
-      )}
-
-      {/* Rename Input */}
-      {rename.newName && (
-        <div className="flex gap-3 justify-center mb-8">
-          <input
-            type="text"
-            className="px-4 py-2 rounded-xl text-black"
-            value={rename.newName}
-            onChange={(e) =>
-              setRename((prev) => ({ ...prev, newName: e.target.value }))
-            }
-          />
-          <button
-            onClick={handleRename}
-            className="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-xl"
-          >
-            Rename
-          </button>
-        </div>
-      )}
-
-      <div className="bg-black text-white min-h-screen py-10 px-6">
-        <div className="max-w-6xl mx-auto space-y-12">
-          <div className="w-full flex gap-4 items-center">
+      {/* Main Content */}
+      <main className="py-8">
+        <Container>
+          {/* Storage Info Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <MyDriveBox />
             <StorageInfoCard
               totalStorage={storageInfo.totalStorage}
               usedStorage={storageInfo.usedStorage}
-              isSubscribed={userInfo?.isSubscribed ? true :false}
+              isSubscribed={userInfo?.isSubscribed || false}
             />
           </div>
 
-          {/* Folders Section */}
-          <div>
-            <h2 className="text-2xl font-semibold mb-6">📁 Folders</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-              {files?.directories?.map((item, i) => (
-                <div
-                  key={i}
-                  className="bg-[#1f1f1f] p-4 rounded-xl shadow-md flex flex-col items-center gap-3 hover:bg-[#2c2c2c] transition relative"
-                  onMouseEnter={() => setFIleDetailsPopup(item._id)}
-                  onMouseLeave={() => setFIleDetailsPopup(item._id)}
-                >
-                  {fileDetailsPopup == item?._id && (
-                    <FileInfo
-                      key={i}
-                      parentName={files.name}
-                      createdAt={item?.createdAt}
-                      name={item.name}
-                      path={files.path}
-                      size={item.size}
-                      type="folder"
-                    />
-                  )}
-                  <img
-                    src="/Paomedia-Small-N-Flat-Folder.512.png"
-                    alt="folder"
-                    className="h-20 w-20"
-                  />
-                  <span className="text-center text-sm truncate w-full font-medium">
-                    {item.name}
-                  </span>
-                  <div className="flex flex-wrap justify-center gap-2 w-full mt-2">
-                    <Link
-                      to={`/${item.name}=${item._id}`}
-                      className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 rounded-full transition"
-                    >
-                      Open
-                    </Link>
-                    <button
-                      onClick={() => handleRenameBox(item)}
-                      className="px-3 py-1 text-xs bg-yellow-600 hover:bg-yellow-700 rounded-full transition"
-                    >
-                      Rename
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item._id, "directory")}
-                      className="px-3 py-1 text-xs bg-red-600 hover:bg-red-700 rounded-full transition"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Action Buttons */}
+          <ActionButtons
+            onCreateFolder={() => setCreateFile("folder")}
+            onUploadFile={() => setCreateFile("file")}
+          />
 
-          {/* Files Section */}
-          <div>
-            <h2 className="text-2xl font-semibold mb-6">📄 Files </h2>
-            <h3 className="text-2xl font-semibold mb-6">
-              Total Number Of Files {files?.files.length}
+          {/* Content Grid */}
+          <div className="space-y-12">
+            {/* Folders */}
+            <FolderGrid
+              folders={files?.directories || []}
+              parentName={files?.name || ""}
+              path={files?.path || []}
+              onRename={(folder) => handleRenameBox(folder as any)}
+              onDelete={(id) => handleDelete(id, "directory")}
+            />
+
+            {/* Files */}
+            <FileGrid
+              files={files?.files || []}
+              parentName={files?.name || ""}
+              path={files?.path || []}
+              onRename={(file) => handleRenameBox(file as any)}
+              onDelete={(id) => handleDelete(id, "file")}
+              onOpen={GetFileContent}
+            />
+          </div>
+        </Container>
+      </main>
+
+      {/* Modals */}
+      <FolderCreateForm
+        isVisible={createFile === "folder"}
+        onClose={() => setCreateFile(null)}
+        onCreate={(name) => {
+          setDirname(name);
+          createNewDir();
+        }}
+      />
+
+      <FileUploadForm
+        isVisible={createFile === "file"}
+        onClose={() => setCreateFile(null)}
+        onUpload={(file) => {
+          setUploadfile(file);
+          handleUpload();
+        }}
+      />
+
+      {/* Rename Modal */}
+      {rename.newName && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Rename {renameType}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-              {files?.files?.map((item, i) => (
-                <div
-                  key={i}
-                  className="bg-[#1f1f1f] relative p-4 rounded-xl shadow-md flex flex-col items-center gap-3 hover:bg-[#2c2c2c] transition"
-                  onMouseEnter={() => setFIleDetailsPopup(item._id)}
-                  onMouseLeave={() => setFIleDetailsPopup(item._id)}
-                >
-                  {fileDetailsPopup == item?._id && (
-                    <FileInfo
-                      key={i}
-                      parentName={files.name}
-                      createdAt={item?.createdAt}
-                      name={item.name}
-                      path={files.path}
-                      size={item.size}
-                      type="folder"
-                    />
-                  )}
-                  <img
-                    src="/Shaunkleyn-Phlat-Blue-Folders-Documents.512.png"
-                    alt="file"
-                    className="h-20 w-20"
-                  />
-                  <span className="text-center text-sm truncate w-full font-medium">
-                    {`${item.name}${item.extension}`}
-                  </span>
-                  <div className="flex flex-wrap justify-center gap-2 w-full mt-2">
-                    <Button
-                      onClick={()=>GetFileContent(item?._id)}
-                      className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 rounded-full transition"
-                    >
-                      Open
-                    </Button>
-                    <Link
-                      to={`${import.meta.env.VITE_SERVER_URL}/file/${
-                        item.id
-                      }?action=download`}
-                      className="px-3 py-1 text-xs bg-green-600 hover:bg-green-700 rounded-full transition"
-                    >
-                      Download
-                    </Link>
-                    <button
-                      onClick={() => handleRenameBox(item)}
-                      className="px-3 py-1 text-xs bg-yellow-600 hover:bg-yellow-700 rounded-full transition"
-                    >
-                      Rename
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item._id, "file")}
-                      className="px-3 py-1 text-xs bg-red-600 hover:bg-red-700 rounded-full transition"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+            <input
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                         focus:ring-2 focus:ring-primary-500 focus:border-transparent mb-4"
+              value={rename.newName}
+              onChange={(e) =>
+                setRename((prev) => ({ ...prev, newName: e.target.value }))
+              }
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => setRename({ newName: null, oldName: null, Id: null })}
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRename}
+                className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                Rename
+              </button>
             </div>
           </div>
         </div>
-      </div>
-      {/* <FileDetails lastModified='2025' name='sanatBlog' size='12mb' type='file'/> */}
+      )}
     </div>
   );
 };

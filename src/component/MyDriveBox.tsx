@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Card, Button } from '../components/ui';
+import { CloudIcon, LinkIcon } from '@heroicons/react/24/outline';
 
 interface StorageInfoType {limit:string , usage:string , usageInDrive:string ,usageInDriveTrash:string}
 
@@ -18,7 +20,7 @@ const navigate = useNavigate()
 
      window.addEventListener('message',(e)=>{
       console.log(e)
-        if(e.origin !== 'http://localhost:4000') return
+        if(e.origin !== import.meta.env.VITE_SERVER_URL) return
         if(e.data =='done' ){
           console.log("done")
           popup?.close()
@@ -40,43 +42,61 @@ const navigate = useNavigate()
     setConnected(true)
    }
   }
-   
 
+  const usageGB = Number(storangeInfo?.usage || 0) / 1024**3;
+  const limitGB = Number(storangeInfo?.limit || 0) / 1024**3;
+  const usagePercent = limitGB > 0 ? (usageGB / limitGB) * 100 : 0;
 
   return (
-    <div className="bg-green-700 rounded-xl px-4 py-[38px] w-72 shadow-lg text-white relative">
-      <div className="flex items-center space-x-3 mb-4">
-        <img src="/mydrive-logo.png" alt="Google Drive" className="h-10 w-10" />
+    <Card variant="elevated" className="bg-gradient-to-br from-green-500 to-emerald-600 dark:from-green-600 dark:to-emerald-700 text-white border-0">
+      <div className="flex items-center space-x-3 mb-6">
+        <div className="p-2 bg-white/20 rounded-lg">
+          <CloudIcon className="h-8 w-8" />
+        </div>
         <div>
-          <p className="font-semibold text-lg">Google Drive Storage</p>
-          <p className="text-md opacity-80 font-semibold">{(Number(storangeInfo?.usage)/1024**3).toFixed(2)}GB / {(Number(storangeInfo?.limit)/1024**3).toFixed(2)}GB</p>
+          <h3 className="font-semibold text-lg">Google Drive</h3>
+          <p className="text-sm opacity-90">
+            {usageGB.toFixed(2)}GB / {limitGB.toFixed(2)}GB
+          </p>
         </div>
       </div>
 
-      <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden mb-4">
-       {driveConnected && <div
-          className="h-2 bg-violet-50 rounded-full"
-          style={{ width: `${(Number(storangeInfo?.usage)/1024**3)/(Number(storangeInfo?.limit)/1024**3)*100}%` }}
-        />}
-      </div>
+      {driveConnected && (
+        <div className="mb-6">
+          <div className="flex justify-between text-sm mb-2">
+            <span>Storage Used</span>
+            <span>{usagePercent.toFixed(1)}%</span>
+          </div>
+          <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
+            <div
+              className="h-2 bg-white rounded-full transition-all duration-300"
+              style={{ width: `${Math.min(usagePercent, 100)}%` }}
+            />
+          </div>
+        </div>
+      )}
 
-    {
-      driveConnected ?  <button
-      onClick={()=>{navigate("/mydrive")}}
-      className="w-full py-2 text-sm bg-blue-700 text-gray-50 font-semibold rounded-lg hover:bg-gray-100 hover:text-[rgb(49,109,237)] transition"
-    >
-      Open Google Drive Files
-    </button>:   <button
-        onClick={handleConnectClick}
-        className="w-full py-2 text-sm bg-violet-800 text-gray-50 font-semibold rounded-lg hover:bg-gray-100 hover:text-[rgb(49,109,237)] transition"
-      >
-        Connect to My Drive
-      </button>
-    }
-    </div>
+      {driveConnected ? (
+        <Button
+          onClick={() => navigate("/mydrive")}
+          variant="secondary"
+          className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30"
+        >
+          <CloudIcon className="w-4 h-4 mr-2" />
+          Open Google Drive
+        </Button>
+      ) : (
+        <Button
+          onClick={handleConnectClick}
+          variant="secondary"
+          className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30"
+        >
+          <LinkIcon className="w-4 h-4 mr-2" />
+          Connect Google Drive
+        </Button>
+      )}
+    </Card>
   );
 };
 
 export default MyDriveBox;
-
-
