@@ -1,5 +1,5 @@
 
-export const OptionFOrSubScription = ({subId,description})=>{
+export const OptionFOrSubScription = ({subId,description}: {subId: string, description: string})=>{
    const options = {
     key: import.meta.env.VITE_RAZORPAY_KEY_ID,
     subscription_id: subId,

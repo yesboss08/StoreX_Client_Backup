@@ -5,13 +5,12 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 interface FileUploadFormProps {
   isVisible: boolean;
   onClose: () => void;
-  onUpload: (file: File) => void;
+  onUpload?: (file: File) => void; // Made optional since it's not used
 }
 
 export const FileUploadForm: React.FC<FileUploadFormProps> = ({
   isVisible,
   onClose,
-  onUpload,
 }) => {
   if (!isVisible) return null;
 

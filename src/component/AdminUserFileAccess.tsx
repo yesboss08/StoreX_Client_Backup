@@ -1,5 +1,5 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+// import React from "react"; // Unused
+// import { useParams } from "react-router-dom"; // Unused
 
 const userFolders = [
   { id: 1, name: "New Folder" },
@@ -14,7 +14,7 @@ const userFiles = [
 
 
 const AdminUserFileAccess = () => {
-    const {userId} = useParams()
+    // const {userId} = useParams() // Unused
 
 
   return (

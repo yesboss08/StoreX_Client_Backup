@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useNavigate ,Link} from 'react-router-dom'
-import { useAppSelector } from '../store/hooks'
-import toast, { Toaster } from 'react-hot-toast';
+import { Link} from 'react-router-dom'
+// import { useAppSelector } from '../store/hooks' // Unused
+// import toast, { Toaster } from 'react-hot-toast'; // Unused
 
 const AdminPanel = () => {
   const usersPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchActive, setSearchActive] = useState("");
   const [searchDeleted, setSearchDeleted] = useState("");
-const [deleteCurrentPage , setDelCurrentPage] = useState(1)
+const [deleteCurrentPage] = useState(1)
 
   const activeUsers = Array.from({ length: 20 }, (_, i) => ({
     id: i + 1,
@@ -43,7 +43,7 @@ const [deleteCurrentPage , setDelCurrentPage] = useState(1)
     currentPage * usersPerPage
   );
 
-const paginationDeletedUser = Math.ceil(filteredDeleted.length/ usersPerPage )
+// const paginationDeletedUser = Math.ceil(filteredDeleted.length/ usersPerPage )
 const deletedPagination = filteredDeleted.slice( (deleteCurrentPage-1)*usersPerPage , deleteCurrentPage*usersPerPage)
 
 
@@ -101,7 +101,7 @@ const deletedPagination = filteredDeleted.slice( (deleteCurrentPage-1)*usersPerP
                       </button>
                     </td>
                     <td className="px-6 py-4 text-center">
-                    <Link to={`/userData/${user._id}`}>
+                    <Link to={`/userData/${user.id}`}>
                     <button className="bg-violet-600 hover:bg-yellow-700 text-white px-4 py-[6px] rounded text-xs">
                         View User
                       </button></Link>
@@ -205,6 +205,7 @@ export default AdminPanel;
 
 
 
+/* Unused component - commented out to fix build
 const DeletePopup = ({isOpen , uid, setOpen}:{isOpen:boolean , uid:string, setOpen:()=>void}) => {
    
   // useEffect(()=>{  },[])
@@ -251,6 +252,7 @@ return (
 
 )
 }
+*/
 
 
 // interface AllUserDataType {

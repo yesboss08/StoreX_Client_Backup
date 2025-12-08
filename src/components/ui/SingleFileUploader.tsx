@@ -13,7 +13,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { UploadCard, type UploadStatus } from './UploadCard';
 import { Button } from './Button';
-import { uploadFile, uploadFileWithFetch, type UploadProgress, type UploadResult } from '../../utils/xhrUpload';
+import { uploadFile, type UploadProgress, type UploadResult } from '../../utils/xhrUpload';
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
 
 export interface SingleFileUploaderProps {
@@ -143,7 +143,7 @@ export const SingleFileUploader: React.FC<SingleFileUploaderProps> = ({
     
     try {
       // Try XHR first, fallback to fetch
-      const UrlData = await fetch(`${import.meta.env.VITE_SERVER_URL}/file/uploads/initiate`,{
+      const UrlData = await fetch(uploadUrl,{
       method:"POST", body:JSON.stringify({fileSize:`${file?.size}`,fileName:`${file?.name}`}),credentials:"include",headers:{
         "Content-Type": 'application/json'
       }

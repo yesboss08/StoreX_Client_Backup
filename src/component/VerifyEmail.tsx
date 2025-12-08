@@ -44,7 +44,7 @@ interface TimerType {min:number , sec:number}
 const OtpField = ()=>{
 
   const navigate = useNavigate()
-const inputArr:string[] = Array.from({length:4}).fill(" ")
+const inputArr:string[] = Array.from({length:4}).fill(" ") as string[]
 const [otp , setOtp] = useState<string[]>(inputArr)
 const inputRef = useRef<HTMLInputElement[]>([])
 const [timer, setTimer ]= useState<TimerType>({min:5 , sec:0})

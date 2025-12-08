@@ -30,7 +30,6 @@ interface FileCardProps {
 
 export const FileCard: React.FC<FileCardProps> = ({
   file,
-  parentName,
   path,
   onRename,
   onDelete,

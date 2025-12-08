@@ -1,8 +1,8 @@
-import { useParams } from "react-router-dom"
+// import { useParams } from "react-router-dom" // Unused
 
 
 const FileCard = () => {
-  const {filename} = useParams()
+  // const {filename} = useParams() // Unused
 
   
   

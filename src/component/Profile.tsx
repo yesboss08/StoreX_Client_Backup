@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 
 const Profile = () => {
-  const [profile, setProfile] = useState({
+  const [profile] = useState({
     name: "SANAT KUMAR",
     email: "sanat@example.com",
     connectedAccount: "GitHub",

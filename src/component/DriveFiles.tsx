@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import mime from 'mime';
 import toast from 'react-hot-toast';
-import { useNavigate,Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 interface Folder {
   id: string;
@@ -169,7 +169,7 @@ onClick={DownloadAllImgs}
 <div className="w-full bg-gray-950 py-4 px-6">
   <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
     {AllFileType.map((type) => (
-      <button onClick={()=>setFileType(type)}
+      <button onClick={()=>setFileType(type as any)}
         key={type}
 
         className={`px-5 py-2 rounded-full  ${FileType == type ? "bg-blue-600":"bg-gray-800"} hover:bg-blue-600 text-white font-medium text-sm transition duration-200 border border-gray-700 hover:border-blue-400`}      >

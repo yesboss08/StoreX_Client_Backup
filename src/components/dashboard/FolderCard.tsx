@@ -26,7 +26,6 @@ interface FolderCardProps {
 
 export const FolderCard: React.FC<FolderCardProps> = ({
   folder,
-  parentName,
   path,
   onRename,
   onDelete,

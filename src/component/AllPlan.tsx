@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {  LogIn } from 'lucide-react';
-import { OptionFOrSubScription } from '../constant/RazorpayOptins';
+// import { OptionFOrSubScription } from '../constant/RazorpayOptins'; // Unused
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Loading from './Loading';
@@ -46,7 +46,7 @@ const CreateNewSubScription = async(planid:string)=>{
    })
   const json = await data.json()
   setIsLoading(false)
-  const razorpay = new window.Razorpay({
+  const razorpay = new (window as any).Razorpay({
     key: "rzp_test_RUWjBPx6hUebvc",
     subscription_id:json?.id,name: "StoreX.",
   description:json.notes.planName,
@@ -145,7 +145,7 @@ toast.success("payment failed ❌🌹")
 
         {/* Pricing cards */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {plans.map((plan) => {
+          {plans.map((plan: any) => {
             if(plan.period!=billing) return null
            // const price = billing === 'monthly' ? monthly : yearly;
             const period = billing === 'monthly' ? 'month' : 'year';
@@ -207,7 +207,7 @@ toast.success("payment failed ❌🌹")
                 </div>
 
                 <ul className={`mt-5 space-y-3 ${isSelected ? 'text-amber-100' : 'text-slate-200'}`}>
-                  {plan.features.map((f, i) => (
+                  {plan.features.map((f: any, i: number) => (
                     <li key={i} className="flex items-center gap-3">
                       <svg className={`h-5 w-5 flex-shrink-0 ${isSelected ? 'text-amber-300' : 'text-emerald-400'}`} viewBox="0 0 20 20" fill="currentColor" aria-hidden>
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414L8.414 15l-4.121-4.121a1 1 0 011.414-1.414L8.414 12.172l7.879-7.879a1 1 0 011.414 0z" clipRule="evenodd" />
