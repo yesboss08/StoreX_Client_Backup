@@ -14,7 +14,7 @@ export interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({
   title = "Store, Sync, and Share Your Files Securely",
-  subtitle = "CloudDrive provides enterprise-grade security with consumer-friendly simplicity. Access your files anywhere, anytime, on any device.Created by sanat",
+  subtitle = "CloudDrive sanat provides enterprise-grade security with consumer-friendly simplicity. Access your files anywhere, anytime, on any device.Created by sanat",
   primaryCtaText = "Get Started Free",
   secondaryCtaText = "Watch Demo",
   onPrimaryClick,
