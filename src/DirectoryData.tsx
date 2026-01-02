@@ -266,9 +266,9 @@ useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
     GetUserInfo();
   }, []);
 
-  useEffect(() => {
-    GetData();
-  }, [dirname]);
+  // useEffect(() => {
+  //   GetData();
+  // }, [dirname]);
 
   const [renameType, setRenameType] = useState<parameterType>("directory");
   const [createFile, setCreateFile] = useState<createFilePropsType>(null);
