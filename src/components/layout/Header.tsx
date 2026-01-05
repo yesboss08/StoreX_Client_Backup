@@ -24,7 +24,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <CloudIcon className="h-8 w-8 text-primary-600" />
             <span className="text-xl font-bold text-gray-900 dark:text-white">
-              CloudDrive
+             🤡 CloudDrive
             </span>
           </Link>
 
