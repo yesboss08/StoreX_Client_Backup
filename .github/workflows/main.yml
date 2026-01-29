@@ -22,7 +22,11 @@ jobs:
       IAM_ROLE : ${{secrets.IAM_ROLE}}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: cloning the repo
+        uses: actions/checkout@v4
+
+      - name: install the packages
+        run : npm ci
       - name: build the current changes
         run: npm run build
       - name: run the test script
@@ -57,6 +61,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      
+      - name: install the packages
+        run : npm ci
       - name: build the current changes
         run: npm run build
       - name: run the test script
