@@ -38,3 +38,6 @@ coverage/
 # Build artifacts
 build/
 out/
+
+.kiro
+dist

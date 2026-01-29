@@ -60,6 +60,7 @@ const DirectoryData = () => {
     const url = `${base_url}/directory${dirId ? `/${dirId}` : ""}`;
     const data = await fetch(url, { credentials: "include" });
     const json = await data.json();
+    console.log(json)
     setFiles(json);
     if (!dirId)
       setStorageInfo((prev) => {
@@ -79,15 +80,15 @@ const GetFileContent = async(fileID:string)=>{
 }
 
   //create new directory
-  const createNewDir = async () => {
+  const createNewDir = async (name:string) => {
     const PostUrl = `${base_url}/directory`;
 
-    if (!files?.id) return;
+    if(!files?.id)return
     try {
       const res = await fetch(PostUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json", parentid: files?.id },
-        body: JSON.stringify({ newName: newDirname }),
+        body: JSON.stringify({ newName: name }),
         credentials: "include",
       });
       await res.json();
@@ -98,6 +99,8 @@ const GetFileContent = async(fileID:string)=>{
       setDirname(null);
     }
   };
+
+
 
   //upload new file
   const [uploadfile, setUploadfile] = useState<File | null>(null);
@@ -264,6 +267,7 @@ useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
 
   useEffect(() => {
     GetUserInfo();
+    GetData()
   }, []);
 
   // useEffect(() => {
@@ -360,7 +364,7 @@ useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
         onClose={() => setCreateFile(null)}
         onCreate={(name) => {
           setDirname(name);
-          createNewDir();
+          createNewDir(name);
         }}
       />
 

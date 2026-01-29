@@ -1,0 +1,77 @@
+name: Store-X-client
+on: 
+    push:
+        branches:
+          - main
+          - test
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+  client-jobs-deployment:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment : 'PROD'
+    env:
+      VITE_SERVER_URL : "https://api.mostorage.cloud"
+      VITE_RAZORPAY_KEY_ID : "rzp_test_RUWjBPx6hUebvc"
+      S3_URL : ${{secrets.S3_URL}}
+      DISTIRIBUTION_ID : ${{secrets.DISTIRIBUTION_ID}}
+      IAM_ROLE : ${{secrets.IAM_ROLE}}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: build the current changes
+        run: npm run build
+      - name: run the test script
+        run: node demotest.js
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.1
+        with: 
+            audience: sts.amazonaws.com
+            aws-region: ap-south-2
+            role-to-assume:  ${{env.IAM_ROLE}}
+      - name: upload the updated build to s3
+        run: aws s3 sync ./dist $S3_URL --delete
+
+      - name: update the invalidations
+        run: |
+         aws cloudfront create-invalidation \
+          --distribution-id $DISTIRIBUTION_ID \
+           --paths "/index.html"
+ 
+ 
+# jobs for test enviroment
+  Client-jobs-test:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/test'
+    environment : "TEST"
+    env:
+      VITE_SERVER_URL : "https://api.mostorage.cloud"
+      VITE_RAZORPAY_KEY_ID : "rzp_test_RUWjBPx6hUebvc"
+      S3_URL : ${{secrets.S3_URL}}
+      DISTIRIBUTION_ID : ${{secrets.DISTIRIBUTION_ID}}
+      IAM_ROLE : ${{secrets.IAM_ROLE}}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: build the current changes
+        run: npm run build
+      - name: run the test script
+        run: node demotest.js
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.1
+        with: 
+            audience: sts.amazonaws.com
+            aws-region: ap-south-2
+            role-to-assume: ${{env.IAM_ROLE}} 
+      - name: upload the updated build to s3
+        run: aws s3 sync ./dist $S3_URL --delete
+
+      - name: update the invalidations
+        run: |
+         aws cloudfront create-invalidation \
+          --distribution-id $DISTIRIBUTION_ID \
+           --paths "/index.html"

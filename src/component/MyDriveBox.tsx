@@ -36,6 +36,8 @@ const navigate = useNavigate()
     const data = await fetch(`${import.meta.env.VITE_SERVER_URL}/drive/storageInfo`,{
       credentials:"include"
     })
+//when the google drive is connected for the user
+if(data.status==204) return setStorageInfo(null)
     const json = await data.json()
    setStorageInfo(json)
    if(data.status==200){
