@@ -63,7 +63,7 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: install the packages
-        run : npm ci
+        run : npm install
       - name: build the current changes
         run: npm run build
       - name: run the test script

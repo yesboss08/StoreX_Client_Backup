@@ -282,6 +282,10 @@ useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
     usedStorage: 0,
   });
 
+  useEffect(()=>{
+    console.log(newDirname)
+  }, [newDirname])
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Header */}
