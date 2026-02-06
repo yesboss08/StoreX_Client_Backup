@@ -5,17 +5,21 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 interface FileUploadFormProps {
   isVisible: boolean;
   onClose: () => void;
-  onUpload?: (file: File) => void; // Made optional since it's not used
+  onUpload?: (file: File) => void;
+  onUploadComplete?: () => void; // Add callback to refresh data
 }
 
 export const FileUploadForm: React.FC<FileUploadFormProps> = ({
   isVisible,
   onClose,
+  onUploadComplete,
 }) => {
   if (!isVisible) return null;
 
   const handleUploadComplete = (response: any) => {
     console.log('Upload completed:', response);
+    // Refresh data after successful upload
+    onUploadComplete?.();
     // Close modal after successful upload
     setTimeout(() => {
       onClose();

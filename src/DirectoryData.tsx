@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { StoreLogin } from "./store/authSlice";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch } from "./store/hooks";
 import MyDriveBox from "./component/MyDriveBox";
 import StorageInfoCard from "./component/StorageInfoCard";
@@ -14,6 +14,8 @@ import {
   FileGrid, 
   FolderGrid 
 } from "./components/dashboard";
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { CloudCog } from "lucide-react";
 
 interface fileDataType {
   _id: string;
@@ -62,10 +64,7 @@ const DirectoryData = () => {
     const json = await data.json();
     console.log(json)
     setFiles(json);
-    if (!dirId)
-      setStorageInfo((prev) => {
-        return { ...prev, usedStorage: json?.size };
-      });
+    // Always fetch fresh user info to get root storage size
     if (data.status == 409 || data.status == 404) {
       navigate("login");
     }
@@ -101,15 +100,22 @@ const GetFileContent = async(fileID:string)=>{
   };
 
 
-
   //upload new file
   const [uploadfile, setUploadfile] = useState<File | null>(null);
   const [uploadProgress , setUploadProgress] = useState<number>(0)
+
+
+  
   const handleUpload = async () => {
     if (!uploadfile || !files?.id) return;
+    console.log({pid:files?.id})
 try {
       const UrlData = await fetch(`${base_url}/file/uploads/initiate`,{
-      method:"POST", body:JSON.stringify({fileSize:`${uploadfile?.size}`,fileName:`${uploadfile?.name}`}),credentials:"include",headers:{
+      method:"POST", body:JSON.stringify({
+        fileSize:`${uploadfile?.size}`,
+        fileName:`${uploadfile?.name}`,
+        pid: files?.id
+      }),credentials:"include",headers:{
         "Content-Type": 'application/json'
       }
     })
@@ -225,6 +231,16 @@ useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
 
   const navigate = useNavigate();
 
+  const handleBack = () => {
+    if (files?.parent) {
+      // Navigate to parent directory
+      navigate(`/dashboard/demo=${files.parent}`);
+    } else {
+      // If no parent, go to root dashboard
+      navigate('/dashboard');
+    }
+  };
+
   const handleLogout = async () => {
     try {
       const response = await fetch(`${base_url}/user/logout`, {
@@ -253,26 +269,27 @@ useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
   const dispatch = useAppDispatch();
   const GetUserInfo = async () => {
     const url = `${base_url}/user/profile`;
+    console.log("hell")
     const res = await fetch(url, { credentials: "include" });
     const userData  = await res.json();
     if(!userData) return
-    const { email, name, role, emailVarified, totalStorage, isSubscribed } = userData
+    const { email, name, role, emailVarified, totalStorage, usedStorage, isSubscribed } = userData
     setUserinfo({ email, name, emailVarified, role, isSubscribed });
-    console.log(totalStorage);
-    setStorageInfo((prev) => {
-      return { ...prev, totalStorage };
+    console.log(totalStorage, usedStorage);
+    setStorageInfo({
+      totalStorage,
+      usedStorage
     });
     dispatch(StoreLogin({ email, name, role, emailVarified }));
   };
 
   useEffect(() => {
     GetUserInfo();
-    GetData()
   }, []);
 
-  // useEffect(() => {
-  //   GetData();
-  // }, [dirname]);
+  useEffect(() => {
+    GetData();
+  }, [dirname]);
 
   const [renameType, setRenameType] = useState<parameterType>("directory");
   const [createFile, setCreateFile] = useState<createFilePropsType>(null);
@@ -292,9 +309,47 @@ useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
         <Container>
           <div className="flex items-center justify-between h-16">
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-              My Drive
-            </h1>
+            <div className="flex items-center space-x-4">
+              {/* Back Button - only show if not in root directory */}
+              {files?.parent && (
+                <button
+                  onClick={handleBack}
+                  className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                >
+                  <ArrowLeftIcon className="w-4 h-4 mr-2" />
+                  Back
+                </button>
+              )}
+              
+              <div className="flex flex-col">
+                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  {files?.name || "My Drive"}
+                </h1>
+                
+                {/* Breadcrumb */}
+                {files?.path && files.path.length > 0 && (
+                  <nav className="flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400">
+                    <button
+                      onClick={() => navigate('/dashboard')}
+                      className="hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                    >
+                      My Drive
+                    </button>
+                    {files.path.map((pathItem) => (
+                      <span key={pathItem._id} className="flex items-center">
+                        <span className="mx-1">/</span>
+                        <button
+                          onClick={() => navigate(`/dashboard/demo=${pathItem._id}`)}
+                          className="hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                        >
+                          {pathItem.name}
+                        </button>
+                      </span>
+                    ))}
+                  </nav>
+                )}
+              </div>
+            </div>
             
             <div className="flex items-center space-x-4">
               <ThemeToggle />
@@ -379,6 +434,7 @@ useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
           setUploadfile(file);
           handleUpload();
         }}
+        onUploadComplete={GetData}
       />
 
       {/* Rename Modal */}

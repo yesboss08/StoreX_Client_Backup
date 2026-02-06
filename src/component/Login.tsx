@@ -125,7 +125,7 @@ const handleSubmit = async()=>{
                 </div>
               </div>
 
-              <SignUpWithGoolge/>
+              <SignUpWithGoolge />
 
               <p className="text-center text-sm text-gray-600 dark:text-gray-300">
                 Don't have an account?{' '}

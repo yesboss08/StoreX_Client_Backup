@@ -1,4 +1,3 @@
-
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
@@ -19,6 +18,12 @@ import { Toaster } from 'react-hot-toast'
 import ManageSubscription from './component/ManageSubscription.tsx'
 import { ThemeProvider } from './contexts/ThemeContext.tsx'
 import { Landing } from './pages/Landing.tsx'
+import { PrivacyPolicy } from './pages/PrivacyPolicy.tsx'
+import { TermsOfService } from './pages/TermsOfService.tsx'
+import { Roadmap } from './pages/Roadmap.tsx'
+import { Dashboard } from './pages/cloud-storage-dashboard'
+
+
 
 createRoot(document.getElementById('root')!).render(
   <ThemeProvider>
@@ -42,12 +47,18 @@ createRoot(document.getElementById('root')!).render(
             <Route path='/signup' element={<Signup />}></Route>
             <Route path='/varifyEmali' element={<VerifyEmail />}></Route>
             <Route path="/dashboard/*" element={<DirectoryData />} />
+            <Route path="/demo/*" element={<Dashboard />} />
             <Route path="/adminPage" element={<Allusers />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/userData/:userId" element={<AdminUserFileAccess />} />
             <Route path="/mydrive" element={<DriveFiles />} />
             <Route path="/plans" element={<AllPlan />} />
             <Route path="/manageSubscription" element={<ManageSubscription />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/roadmap" element={<Roadmap />} />
+            <Route path="/features" element={<Roadmap />} />
+            {/* make a feature route and component */}
           </Routes>
         </BrowserRouter>
       </PersistGate>

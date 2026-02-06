@@ -15,6 +15,7 @@ import { UploadCard, type UploadStatus } from './UploadCard';
 import { Button } from './Button';
 import { uploadFile, type UploadProgress, type UploadResult } from '../../utils/xhrUpload';
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
+import { Parentheses } from 'lucide-react';
 
 export interface SingleFileUploaderProps {
   uploadUrl: string;
@@ -70,7 +71,6 @@ export const SingleFileUploader: React.FC<SingleFileUploaderProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadRef = useRef<UploadResult | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  
   // Throttled progress update to avoid excessive re-renders
   const throttledProgressUpdate = useCallback(
     throttle((newProgress: UploadProgress) => {
@@ -135,20 +135,31 @@ export const SingleFileUploader: React.FC<SingleFileUploaderProps> = ({
   
   const startUpload = async () => {
     if (!file) return;
-    
+
     setStatus('uploading');
     setProgress(null);
     setError('');
     setSuccessMessage('');
     
     try {
-      // Try XHR first, fallback to fetch
+      // Get parent ID from URL - extract from path like /dashboard/demo=697e63896d927765f7422387
+      const pathParts = window.location.pathname.split('=');
+      const pid = pathParts.length > 1 ? pathParts[1] : undefined;
+      // Send parent ID (pid) along with file info in request body
       const UrlData = await fetch(uploadUrl,{
-      method:"POST", body:JSON.stringify({fileSize:`${file?.size}`,fileName:`${file?.name}`}),credentials:"include",headers:{
-        "Content-Type": 'application/json'
-      }
-    })
-    const {postUrl,id} = await UrlData.json()
+        method:"POST", 
+        body:JSON.stringify({
+          fileSize:`${file?.size}`,
+          fileName:`${file?.name}`,
+          pid: pid
+        }),
+        credentials:"include",
+        headers:{
+          "Content-Type": 'application/json'
+        }
+      })
+      const {postUrl,id} = await UrlData.json()
+      
       if (typeof XMLHttpRequest !== 'undefined') {
         abortControllerRef.current = new AbortController();
         
@@ -159,12 +170,15 @@ export const SingleFileUploader: React.FC<SingleFileUploaderProps> = ({
           onComplete: async(response) => {
            try {
                const serverRes = await fetch(`${import.meta.env.VITE_SERVER_URL}/file/uploads/complete`,{
-      method:"put", headers:{ "Content-Type": "application/json"},credentials:"include",body:JSON.stringify({fileId:`${id}`})
-    })
-const json = await serverRes.json()
-            setStatus('success');
-            setSuccessMessage(json?.msg);
-            onComplete?.(response);
+                method:"put", 
+                headers:{ "Content-Type": "application/json"},
+                credentials:"include",
+                body:JSON.stringify({fileId:`${id}`})
+              })
+              const json = await serverRes.json()
+              setStatus('success');
+              setSuccessMessage(json?.msg);
+              onComplete?.(response);
            } catch (error) {
             console.log("error",error)
            }
@@ -181,8 +195,10 @@ const json = await serverRes.json()
         
         await uploadRef.current.promise;
       } 
-    } catch  {
-      console.log("erro",error)
+    } catch (err) {
+      console.log("error", err)
+      setStatus('error');
+      setError('Upload failed');
     }
   };
   

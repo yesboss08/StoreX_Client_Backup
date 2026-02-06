@@ -36,7 +36,7 @@ export function uploadFile(options: UploadOptions): UploadResult {
   
   const xhr = new XMLHttpRequest();
   
-  
+
   const promise = new Promise((resolve, reject) => {
     // Progress tracking
     xhr.upload.onprogress = (event) => {

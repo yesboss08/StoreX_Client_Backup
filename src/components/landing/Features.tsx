@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Container, Card } from '../ui';
 import { 
   ShieldCheckIcon, 
@@ -103,12 +104,15 @@ export const Features: React.FC<FeaturesProps> = ({
           <p className="text-gray-600 dark:text-gray-300 mb-6">
             Ready to experience the difference?
           </p>
-          <div className="inline-flex items-center space-x-2 text-primary-600 dark:text-primary-400 font-medium hover:text-primary-700 dark:hover:text-primary-300 transition-colors cursor-pointer">
+          <Link 
+            to="/roadmap" 
+            className="inline-flex items-center space-x-2 text-primary-600 dark:text-primary-400 font-medium hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+          >
             <span>Explore all features</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-          </div>
+          </Link>
         </div>
       </Container>
     </section>

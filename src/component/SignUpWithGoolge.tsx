@@ -1,4 +1,4 @@
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin,useGoogleOneTapLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 
 const SignUpWithGoolge = () => {
@@ -11,7 +11,7 @@ try {
         method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({token}), credentials:'include'
     })
     if(data.status==200){
-        navigate("/")
+        navigate("/dashboard")
     }
 } catch (error) {
     console.log("error while doing google auth", error) 
@@ -28,6 +28,9 @@ if(res?.credential) CreateAcc(res.credential);
     }}
     useOneTap
   />
+
+    
+
   )
 }
 

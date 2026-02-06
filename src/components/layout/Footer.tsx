@@ -113,13 +113,13 @@ export const Footer: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <div className="flex space-x-6">
                 <Link 
-                  to="/privacy" 
+                  to="/privacy-policy" 
                   className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
                 >
                   Privacy Policy
                 </Link>
                 <Link 
-                  to="/terms" 
+                  to="/terms-of-service" 
                   className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
                 >
                   Terms of Service

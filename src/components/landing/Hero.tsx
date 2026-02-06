@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Button } from '../ui';
-import { ArrowRightIcon, PlayIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon, PlayIcon, SparklesIcon } from '@heroicons/react/24/outline';
 
 export interface HeroProps {
   title?: string;
@@ -64,6 +64,18 @@ export const Hero: React.FC<HeroProps> = ({
             <Link to="/signup" onClick={handlePrimaryClick}>
               <Button size="lg" className="group">
                 {primaryCtaText}
+                <ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
+            
+            <Link to="/roadmap">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="group"
+              >
+                <SparklesIcon className="mr-2 h-5 w-5" />
+                View Roadmap
                 <ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>

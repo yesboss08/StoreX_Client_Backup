@@ -1,0 +1,456 @@
+{
+  "storage": {
+    "google": {
+      "used": 67.5,
+      "total": 100
+    },
+    "onedrive": {
+      "used": 42.3,
+      "total": 50
+    },
+    "dropbox": {
+      "used": 8.7,
+      "total": 20
+    },
+    "totals": {
+      "used": 118.5,
+      "total": 170
+    }
+  },
+  "folders": [
+    {
+      "id": "folder-1",
+      "name": "Design Projects",
+      "fileCount": 36,
+      "members": [
+        {
+          "id": "user-1",
+          "name": "Sarah Johnson",
+          "avatar": "https://i.pravatar.cc/150?img=1",
+          "initials": "SJ"
+        },
+        {
+          "id": "user-2",
+          "name": "Michael Chen",
+          "avatar": "https://i.pravatar.cc/150?img=2",
+          "initials": "MC"
+        },
+        {
+          "id": "user-3",
+          "name": "Emily Rodriguez",
+          "avatar": "https://i.pravatar.cc/150?img=3",
+          "initials": "ER"
+        }
+      ],
+      "createdAt": "2024-01-15T10:30:00Z",
+      "updatedAt": "2024-03-20T14:22:00Z"
+    },
+    {
+      "id": "folder-2",
+      "name": "Marketing Materials",
+      "fileCount": 24,
+      "members": [
+        {
+          "id": "user-4",
+          "name": "David Kim",
+          "avatar": "https://i.pravatar.cc/150?img=4",
+          "initials": "DK"
+        },
+        {
+          "id": "user-5",
+          "name": "Jessica Taylor",
+          "avatar": "https://i.pravatar.cc/150?img=5",
+          "initials": "JT"
+        },
+        {
+          "id": "user-6",
+          "name": "Robert Anderson",
+          "avatar": "https://i.pravatar.cc/150?img=6",
+          "initials": "RA"
+        },
+        {
+          "id": "user-7",
+          "name": "Amanda White",
+          "avatar": "https://i.pravatar.cc/150?img=7",
+          "initials": "AW"
+        },
+        {
+          "id": "user-8",
+          "name": "Christopher Lee",
+          "avatar": "https://i.pravatar.cc/150?img=8",
+          "initials": "CL"
+        }
+      ],
+      "createdAt": "2024-02-01T09:15:00Z",
+      "updatedAt": "2024-03-19T16:45:00Z"
+    },
+    {
+      "id": "folder-3",
+      "name": "Client Presentations",
+      "fileCount": 18,
+      "members": [
+        {
+          "id": "user-9",
+          "name": "Lisa Martinez",
+          "avatar": "https://i.pravatar.cc/150?img=9",
+          "initials": "LM"
+        },
+        {
+          "id": "user-10",
+          "name": "James Wilson",
+          "initials": "JW"
+        }
+      ],
+      "createdAt": "2024-01-20T11:00:00Z",
+      "updatedAt": "2024-03-18T10:30:00Z"
+    },
+    {
+      "id": "folder-4",
+      "name": "Development Docs",
+      "fileCount": 52,
+      "members": [
+        {
+          "id": "user-11",
+          "name": "Kevin Brown",
+          "avatar": "https://i.pravatar.cc/150?img=11",
+          "initials": "KB"
+        }
+      ],
+      "createdAt": "2023-12-10T08:00:00Z",
+      "updatedAt": "2024-03-21T09:15:00Z"
+    },
+    {
+      "id": "folder-5",
+      "name": "Team Photos",
+      "fileCount": 127,
+      "members": [
+        {
+          "id": "user-12",
+          "name": "Nicole Davis",
+          "avatar": "https://i.pravatar.cc/150?img=12",
+          "initials": "ND"
+        },
+        {
+          "id": "user-13",
+          "name": "Thomas Garcia",
+          "avatar": "https://i.pravatar.cc/150?img=13",
+          "initials": "TG"
+        },
+        {
+          "id": "user-14",
+          "name": "Rachel Moore",
+          "avatar": "https://i.pravatar.cc/150?img=14",
+          "initials": "RM"
+        },
+        {
+          "id": "user-15",
+          "name": "Daniel Jackson",
+          "initials": "DJ"
+        }
+      ],
+      "createdAt": "2024-01-05T13:20:00Z",
+      "updatedAt": "2024-03-15T17:00:00Z"
+    },
+    {
+      "id": "folder-6",
+      "name": "Financial Reports",
+      "fileCount": 15,
+      "members": [
+        {
+          "id": "user-16",
+          "name": "Patricia Thompson",
+          "avatar": "https://i.pravatar.cc/150?img=16",
+          "initials": "PT"
+        },
+        {
+          "id": "user-17",
+          "name": "Mark Harris",
+          "initials": "MH"
+        }
+      ],
+      "createdAt": "2024-02-15T10:00:00Z",
+      "updatedAt": "2024-03-22T11:30:00Z"
+    }
+  ],
+  "files": [
+    {
+      "id": "file-1",
+      "name": "Q1 Marketing Strategy.pdf",
+      "type": "pdf",
+      "sizeBytes": 2457600,
+      "members": [
+        {
+          "id": "user-4",
+          "name": "David Kim",
+          "avatar": "https://i.pravatar.cc/150?img=4",
+          "initials": "DK"
+        },
+        {
+          "id": "user-5",
+          "name": "Jessica Taylor",
+          "avatar": "https://i.pravatar.cc/150?img=5",
+          "initials": "JT"
+        }
+      ],
+      "lastModified": "2024-03-22T14:30:00Z",
+      "url": "/files/q1-marketing-strategy.pdf"
+    },
+    {
+      "id": "file-2",
+      "name": "Product Roadmap 2024.xlsx",
+      "type": "xlsx",
+      "sizeBytes": 1048576,
+      "members": [
+        {
+          "id": "user-11",
+          "name": "Kevin Brown",
+          "avatar": "https://i.pravatar.cc/150?img=11",
+          "initials": "KB"
+        },
+        {
+          "id": "user-1",
+          "name": "Sarah Johnson",
+          "avatar": "https://i.pravatar.cc/150?img=1",
+          "initials": "SJ"
+        },
+        {
+          "id": "user-9",
+          "name": "Lisa Martinez",
+          "avatar": "https://i.pravatar.cc/150?img=9",
+          "initials": "LM"
+        }
+      ],
+      "lastModified": "2024-03-21T16:45:00Z",
+      "url": "/files/product-roadmap-2024.xlsx"
+    },
+    {
+      "id": "file-3",
+      "name": "Client Presentation Final.pptx",
+      "type": "pptx",
+      "sizeBytes": 15728640,
+      "members": [
+        {
+          "id": "user-9",
+          "name": "Lisa Martinez",
+          "avatar": "https://i.pravatar.cc/150?img=9",
+          "initials": "LM"
+        }
+      ],
+      "lastModified": "2024-03-20T11:20:00Z",
+      "url": "/files/client-presentation-final.pptx"
+    },
+    {
+      "id": "file-4",
+      "name": "Brand Guidelines.pdf",
+      "type": "pdf",
+      "sizeBytes": 8388608,
+      "members": [
+        {
+          "id": "user-4",
+          "name": "David Kim",
+          "avatar": "https://i.pravatar.cc/150?img=4",
+          "initials": "DK"
+        },
+        {
+          "id": "user-1",
+          "name": "Sarah Johnson",
+          "avatar": "https://i.pravatar.cc/150?img=1",
+          "initials": "SJ"
+        }
+      ],
+      "lastModified": "2024-03-19T09:15:00Z",
+      "url": "/files/brand-guidelines.pdf"
+    },
+    {
+      "id": "file-5",
+      "name": "Team Photo Spring 2024.jpg",
+      "type": "jpg",
+      "sizeBytes": 5242880,
+      "members": [
+        {
+          "id": "user-12",
+          "name": "Nicole Davis",
+          "avatar": "https://i.pravatar.cc/150?img=12",
+          "initials": "ND"
+        },
+        {
+          "id": "user-13",
+          "name": "Thomas Garcia",
+          "avatar": "https://i.pravatar.cc/150?img=13",
+          "initials": "TG"
+        }
+      ],
+      "lastModified": "2024-03-18T15:30:00Z",
+      "url": "/files/team-photo-spring-2024.jpg"
+    },
+    {
+      "id": "file-6",
+      "name": "Meeting Notes March.docx",
+      "type": "docx",
+      "sizeBytes": 524288,
+      "members": [
+        {
+          "id": "user-10",
+          "name": "James Wilson",
+          "initials": "JW"
+        }
+      ],
+      "lastModified": "2024-03-17T10:00:00Z",
+      "url": "/files/meeting-notes-march.docx"
+    },
+    {
+      "id": "file-7",
+      "name": "Project Archive Q4.zip",
+      "type": "zip",
+      "sizeBytes": 104857600,
+      "members": [
+        {
+          "id": "user-11",
+          "name": "Kevin Brown",
+          "avatar": "https://i.pravatar.cc/150?img=11",
+          "initials": "KB"
+        },
+        {
+          "id": "user-1",
+          "name": "Sarah Johnson",
+          "avatar": "https://i.pravatar.cc/150?img=1",
+          "initials": "SJ"
+        }
+      ],
+      "lastModified": "2024-03-15T13:45:00Z",
+      "url": "/files/project-archive-q4.zip"
+    },
+    {
+      "id": "file-8",
+      "name": "Budget Forecast.xlsx",
+      "type": "xlsx",
+      "sizeBytes": 786432,
+      "members": [
+        {
+          "id": "user-16",
+          "name": "Patricia Thompson",
+          "avatar": "https://i.pravatar.cc/150?img=16",
+          "initials": "PT"
+        }
+      ],
+      "lastModified": "2024-03-14T08:30:00Z",
+      "url": "/files/budget-forecast.xlsx"
+    },
+    {
+      "id": "file-9",
+      "name": "Product Demo Video.mp4",
+      "type": "mp4",
+      "sizeBytes": 52428800,
+      "members": [
+        {
+          "id": "user-2",
+          "name": "Michael Chen",
+          "avatar": "https://i.pravatar.cc/150?img=2",
+          "initials": "MC"
+        },
+        {
+          "id": "user-4",
+          "name": "David Kim",
+          "avatar": "https://i.pravatar.cc/150?img=4",
+          "initials": "DK"
+        }
+      ],
+      "lastModified": "2024-03-12T16:20:00Z",
+      "url": "/files/product-demo-video.mp4"
+    },
+    {
+      "id": "file-10",
+      "name": "Podcast Episode 12.mp3",
+      "type": "mp3",
+      "sizeBytes": 12582912,
+      "members": [
+        {
+          "id": "user-5",
+          "name": "Jessica Taylor",
+          "avatar": "https://i.pravatar.cc/150?img=5",
+          "initials": "JT"
+        }
+      ],
+      "lastModified": "2024-03-10T14:00:00Z",
+      "url": "/files/podcast-episode-12.mp3"
+    },
+    {
+      "id": "file-11",
+      "name": "API Documentation.pdf",
+      "type": "pdf",
+      "sizeBytes": 3145728,
+      "members": [
+        {
+          "id": "user-11",
+          "name": "Kevin Brown",
+          "avatar": "https://i.pravatar.cc/150?img=11",
+          "initials": "KB"
+        },
+        {
+          "id": "user-2",
+          "name": "Michael Chen",
+          "avatar": "https://i.pravatar.cc/150?img=2",
+          "initials": "MC"
+        }
+      ],
+      "lastModified": "2024-03-08T11:15:00Z",
+      "url": "/files/api-documentation.pdf"
+    },
+    {
+      "id": "file-12",
+      "name": "Design System v2.fig",
+      "type": "other",
+      "sizeBytes": 20971520,
+      "members": [
+        {
+          "id": "user-1",
+          "name": "Sarah Johnson",
+          "avatar": "https://i.pravatar.cc/150?img=1",
+          "initials": "SJ"
+        },
+        {
+          "id": "user-3",
+          "name": "Emily Rodriguez",
+          "avatar": "https://i.pravatar.cc/150?img=3",
+          "initials": "ER"
+        }
+      ],
+      "lastModified": "2024-03-05T09:30:00Z",
+      "url": "/files/design-system-v2.fig"
+    },
+    {
+      "id": "file-13",
+      "name": "Release Notes.txt",
+      "type": "txt",
+      "sizeBytes": 8192,
+      "members": [
+        {
+          "id": "user-11",
+          "name": "Kevin Brown",
+          "avatar": "https://i.pravatar.cc/150?img=11",
+          "initials": "KB"
+        }
+      ],
+      "lastModified": "2024-03-01T10:45:00Z",
+      "url": "/files/release-notes.txt"
+    }
+  ],
+  "user": {
+    "user": {
+      "id": "current-user",
+      "name": "Alex Morgan",
+      "email": "alex.morgan@company.com",
+      "avatar": "https://i.pravatar.cc/150?img=20",
+      "quotaUsed": 118.5,
+      "quotaTotal": 170
+    },
+    "stats": {
+      "images": "12.5 GB",
+      "documents": "8.3 GB",
+      "videos": "52.4 GB",
+      "audios": "3.2 GB",
+      "archive": "28.7 GB",
+      "others": "13.4 GB"
+    }
+  }
+}

@@ -1,123 +1,54 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Card, Button, HoverDetails } from '../ui';
-import { 
-  FolderIcon, 
-  EllipsisVerticalIcon,
-  PencilIcon,
-  TrashIcon,
-  EyeIcon
-} from '@heroicons/react/24/outline';
-
-interface FolderData {
-  _id: string;
-  name: string;
-  createdAt?: string;
-  size?: number;
-}
+import { MoreHorizontal } from 'lucide-react';
+import { Folder } from '../../types';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface FolderCardProps {
-  folder: FolderData;
-  parentName: string;
-  path: any[];
-  onRename: (folder: FolderData) => void;
-  onDelete: (id: string) => void;
+  folder: Folder;
 }
 
-export const FolderCard: React.FC<FolderCardProps> = ({
-  folder,
-  path,
-  onRename,
-  onDelete,
-}) => {
-  const [showMenu, setShowMenu] = useState(false);
-
-  const handleCopyPath = () => {
-    const fullPath = path.map(p => p.name).join('/') + '/' + folder.name;
-    navigator.clipboard.writeText(fullPath);
-  };
+export const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
+  const { theme } = useTheme();
 
   return (
-    <HoverDetails
-      name={folder.name}
-      path={path.map(p => p.name).join('/')}
-      size={folder.size}
-      lastModified={folder.createdAt}
-      type="folder"
-      isVisible={true}
-      onRename={() => onRename(folder)}
-      onCopyPath={handleCopyPath}
-    >
-      <Card 
-        variant="elevated" 
-        padding="md"
-        className="group hover:scale-105 transition-all duration-200 relative"
-      >
-
-      {/* Menu Button */}
-      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="p-1"
-          onClick={() => setShowMenu(!showMenu)}
-        >
-          <EllipsisVerticalIcon className="w-4 h-4" />
-        </Button>
-
-        {/* Dropdown Menu */}
-        {showMenu && (
-          <div className="absolute right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 z-10 min-w-[120px]">
-            <button
-              onClick={() => {
-                onRename(folder);
-                setShowMenu(false);
-              }}
-              className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
-            >
-              <PencilIcon className="w-4 h-4" />
-              <span>Rename</span>
-            </button>
-            <button
-              onClick={() => {
-                onDelete(folder._id);
-                setShowMenu(false);
-              }}
-              className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2 text-red-600"
-            >
-              <TrashIcon className="w-4 h-4" />
-              <span>Delete</span>
-            </button>
+    <div className="min-w-[220px]">
+      <div className={`p-4 rounded-xl border transition-all hover:shadow-md cursor-pointer ${
+        theme === 'light' 
+          ? 'bg-white border-gray-100' 
+          : 'bg-gray-800 border-gray-700'
+      }`}>
+        <div className="flex justify-between items-start mb-3">
+          <div className="bg-blue-100 dark:bg-blue-900/30 p-2.5 rounded-xl text-blue-600">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="opacity-80">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
           </div>
-        )}
-      </div>
-
-      {/* Folder Content */}
-      <div className="flex flex-col items-center space-y-3">
-        <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-          <FolderIcon className="w-12 h-12 text-blue-600 dark:text-blue-400" />
+          <button className={`p-1 rounded-lg ${theme === 'light' ? 'hover:bg-gray-50 text-gray-400' : 'hover:bg-gray-700 text-gray-500'}`}>
+            <MoreHorizontal className="w-5 h-5" />
+          </button>
         </div>
+        <h3 className={`font-semibold mb-1 text-sm ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+          {folder.name}
+        </h3>
+        <p className="text-xs text-gray-500 mb-4">{folder.fileCount} files</p>
         
-        <div className="text-center w-full">
-          <h3 className="font-medium text-gray-900 dark:text-white truncate">
-            {folder.name}
-          </h3>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-2 w-full">
-          <Link
-            to={`/dashboard/${folder.name}=${folder._id}`}
-            className="flex-1"
-          >
-            <Button variant="primary" size="sm" className="w-full">
-              <EyeIcon className="w-4 h-4 mr-1" />
-              Open
-            </Button>
-          </Link>
+        <div className="flex -space-x-2 items-center">
+  
+          {folder?.members?.slice(0, 3)?.map(m => (
+            <img 
+              key={m.id} 
+              src={m.avatar || `https://ui-avatars.com/api/?name=${m.name}`} 
+              alt={m.name}
+              className="w-7 h-7 rounded-full border-2 border-white dark:border-gray-800 object-cover" 
+            />
+          ))}
+          {folder?.members?.length > 3 && (
+            <div className="w-7 h-7 rounded-full border-2 border-white dark:border-gray-800 bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-500">
+              +{folder?.members.length - 3}
+            </div>
+          )}
         </div>
       </div>
-      </Card>
-    </HoverDetails>
+    </div>
   );
 };
