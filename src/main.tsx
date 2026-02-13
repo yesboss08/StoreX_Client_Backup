@@ -26,7 +26,7 @@ import { Dashboard } from './pages/cloud-storage-dashboard'
 
 
 
-//this is changed form ec2
+//this is 2nd changed form ec2
 createRoot(document.getElementById('root')!).render(
   <ThemeProvider>
     <Provider store={store}>
