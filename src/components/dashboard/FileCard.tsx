@@ -10,7 +10,7 @@ import {
   ArrowDownTrayIcon
 } from '@heroicons/react/24/outline';
 
-interface FileData {
+export interface FileData {
   _id: string;
   name: string;
   extension: string;
@@ -19,10 +19,15 @@ interface FileData {
   id: string;
 }
 
+interface PathItem {
+  _id: string;
+  name: string;
+}
+
 interface FileCardProps {
   file: FileData;
   parentName: string;
-  path: any[];
+  path: PathItem[];
   onRename: (file: FileData) => void;
   onDelete: (id: string) => void;
   onOpen: (id: string) => void;

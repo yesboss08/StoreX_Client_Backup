@@ -13,7 +13,7 @@ export interface PricingTier {
   onSelect: () => void;
 }
 
-export interface PricingCardProps extends PricingTier {}
+export type PricingCardProps = PricingTier;
 
 export const PricingCard: React.FC<PricingCardProps> = ({
   name,

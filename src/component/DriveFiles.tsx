@@ -73,8 +73,8 @@ function getIconFromMimeType(mimeType:string) {
   if (mimeType.includes("image")) return "/icons/images.png";
   return "/icons/file.png";
 }
-type FileTypeInterface=  "All" |"image"|"pdf"|"folder"|"document"|"video"|"spreadsheet"
-const AllFileType =["All","image","pdf","folder","document","video","spreadsheet"]
+const AllFileType = ["All","image","pdf","folder","document","video","spreadsheet"] as const;
+type FileTypeInterface = typeof AllFileType[number];
 const [FileType , setFileType] = useState<FileTypeInterface>("All")
 
 
@@ -169,7 +169,7 @@ onClick={DownloadAllImgs}
 <div className="w-full bg-gray-950 py-4 px-6">
   <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
     {AllFileType.map((type) => (
-      <button onClick={()=>setFileType(type as any)}
+      <button onClick={()=>setFileType(type)}
         key={type}
 
         className={`px-5 py-2 rounded-full  ${FileType == type ? "bg-blue-600":"bg-gray-800"} hover:bg-blue-600 text-white font-medium text-sm transition duration-200 border border-gray-700 hover:border-blue-400`}      >

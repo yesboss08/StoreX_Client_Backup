@@ -8,7 +8,7 @@ import { RecentFilesTable } from '../../components/dashboard/RecentFilesTable';
 import { FileUploadForm, FolderCreateForm } from '../../components/dashboard';
 import { useTheme } from '../../contexts/ThemeContext';
 
-import { StorageResponse, File, Folder, User, Member } from '../../types';
+import { StorageResponse, File, Folder, User, Member, StorageProvider } from '../../types';
 
 const demoMembers: Member[] = [
   { id: 'm1', name: 'Ava Peterson', initials: 'AP', avatar: 'https://i.pravatar.cc/80?img=5' },
@@ -178,7 +178,8 @@ const Dashboard: React.FC = () => {
              <div className="flex gap-6 overflow-x-auto pb-4 no-scrollbar">
                {data.storage && Object.entries(data.storage).map(([key, value]) => {
                  if (key === 'totals') return null;
-                 const providerInfo = getProviderInfo(key, value as any);
+                 const providerKey = key as StorageProvider['id'];
+                 const providerInfo = getProviderInfo(providerKey, value as ProviderStorage);
                  return <StorageCard key={key} provider={providerInfo} />;
                })}
              </div>
@@ -243,30 +244,33 @@ const Dashboard: React.FC = () => {
   );
 };
 
-function getProviderInfo(key: string, data: { used: number, total: number }) {
-   const config: any = {
-     google: { 
-       name: 'Google Drive', 
-       icon: 'https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo.png', 
-       color: '#3B82F6' 
-     },
-     onedrive: { 
-       name: 'One Drive', 
-       icon: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Microsoft_Office_OneDrive_%282019%E2%80%93present%29.svg', 
-       color: '#0EA5E9' 
-     },
-     dropbox: { 
-       name: 'Dropbox', 
-       icon: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Dropbox_Icon.svg', 
-       color: '#0061FF' 
-     }
-   };
-   const info = config[key] || { name: key, icon: '', color: '#999' };
-   return {
-     id: key,
-     ...info,
-     ...data
-   };
+type ProviderStorage = { used: number; total: number };
+type ProviderConfig = { name: string; icon: string; color: string };
+
+function getProviderInfo(key: StorageProvider['id'], data: ProviderStorage) {
+  const config: Record<string, ProviderConfig> = {
+    google: { 
+      name: 'Google Drive', 
+      icon: 'https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo.png', 
+      color: '#3B82F6' 
+    },
+    onedrive: { 
+      name: 'One Drive', 
+      icon: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Microsoft_Office_OneDrive_%282019%E2%80%93present%29.svg', 
+      color: '#0EA5E9' 
+    },
+    dropbox: { 
+      name: 'Dropbox', 
+      icon: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Dropbox_Icon.svg', 
+      color: '#0061FF' 
+    }
+  };
+  const info = config[key] ?? { name: key, icon: '', color: '#999' };
+  return {
+    id: key,
+    ...info,
+    ...data
+  };
 }
 
 export default Dashboard;

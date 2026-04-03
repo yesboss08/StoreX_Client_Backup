@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { StoreLogin } from "./store/authSlice";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch } from "./store/hooks";
 import MyDriveBox from "./component/MyDriveBox";
 import StorageInfoCard from "./component/StorageInfoCard";
@@ -15,8 +15,6 @@ import {
   FolderGrid 
 } from "./components/dashboard";
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { CloudCog } from "lucide-react";
-
 interface fileDataType {
   _id: string;
   name: string;
@@ -174,20 +172,28 @@ useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
     }
   };
 
+  type RenameableItem = {
+    _id?: string;
+    id?: string;
+    name: string;
+    extension?: string;
+  };
+
   //open the rename popup
-  const handleRenameBox = (item: fileDataType | directoryDataType) => {
-    if ("extension" in item) {
+  const handleRenameBox = (item: RenameableItem) => {
+    const targetId = item._id ?? item.id ?? null;
+    if (typeof item.extension === "string") {
       setRename(() => {
         return {
           newName: `${item.name}${item.extension}`,
           oldName: `${item.name}${item.extension}`,
-          Id: item._id,
+          Id: targetId,
         };
       });
       return setRenameType("file");
     } else {
       setRename(() => {
-        return { newName: item.name, oldName: item.name, Id: item._id };
+        return { newName: item.name, oldName: item.name, Id: targetId };
       });
       setRenameType("directory");
     }
@@ -400,7 +406,7 @@ useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
               folders={files?.directories || []}
               parentName={files?.name || ""}
               path={files?.path || []}
-              onRename={(folder) => handleRenameBox(folder as any)}
+              onRename={(folder) => handleRenameBox(folder)}
               onDelete={(id) => handleDelete(id, "directory")}
             />
 
@@ -409,7 +415,7 @@ useEffect(()=>{console.log(uploadProgress)},[uploadProgress])
               files={files?.files || []}
               parentName={files?.name || ""}
               path={files?.path || []}
-              onRename={(file) => handleRenameBox(file as any)}
+              onRename={(file) => handleRenameBox(file)}
               onDelete={(id) => handleDelete(id, "file")}
               onOpen={GetFileContent}
             />

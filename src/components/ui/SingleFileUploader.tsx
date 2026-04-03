@@ -15,11 +15,10 @@ import { UploadCard, type UploadStatus } from './UploadCard';
 import { Button } from './Button';
 import { uploadFile, type UploadProgress, type UploadResult } from '../../utils/xhrUpload';
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
-import { Parentheses } from 'lucide-react';
 
 export interface SingleFileUploaderProps {
   uploadUrl: string;
-  onComplete?: (response: any) => void;
+  onComplete?: (response: unknown) => void;
   onError?: (error: Error) => void;
   onProgress?: (progress: UploadProgress) => void;
   accept?: string;
@@ -29,11 +28,11 @@ export interface SingleFileUploaderProps {
 }
 
 // Throttle function to limit UI updates
-const throttle = <T extends (...args: any[]) => void>(func: T, delay: number): T => {
-  let timeoutId: NodeJS.Timeout | null = null;
+const throttle = <TArgs extends unknown[]>(func: (...args: TArgs) => void, delay: number) => {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
   let lastExecTime = 0;
   
-  return ((...args: any[]) => {
+  return ((...args: TArgs) => {
     const currentTime = Date.now();
     
     if (currentTime - lastExecTime > delay) {
@@ -46,7 +45,7 @@ const throttle = <T extends (...args: any[]) => void>(func: T, delay: number): T
         lastExecTime = Date.now();
       }, delay - (currentTime - lastExecTime));
     }
-  }) as T;
+  }) as (...args: TArgs) => void;
 };
 
 export const SingleFileUploader: React.FC<SingleFileUploaderProps> = ({

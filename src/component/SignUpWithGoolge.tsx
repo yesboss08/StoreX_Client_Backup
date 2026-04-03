@@ -1,4 +1,4 @@
-import { GoogleLogin,useGoogleOneTapLogin } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 
 const SignUpWithGoolge = () => {

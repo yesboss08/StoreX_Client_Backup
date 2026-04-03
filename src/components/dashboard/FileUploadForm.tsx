@@ -16,7 +16,7 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
 }) => {
   if (!isVisible) return null;
 
-  const handleUploadComplete = (response: any) => {
+  const handleUploadComplete = (response: unknown) => {
     console.log('Upload completed:', response);
     // Refresh data after successful upload
     onUploadComplete?.();

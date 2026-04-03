@@ -1,21 +1,16 @@
 import React from 'react';
-import { FolderCard } from './FolderCard';
+import { FolderCard, type FolderCardData } from './FolderCard';
 
-interface FolderData {
+interface PathItem {
   _id: string;
   name: string;
-  createdAt?: string;
-  updatedAt?: string;
-  size?: number;
-  members?: any[];
-  fileCount?: number;
 }
 
 interface FolderGridProps {
-  folders: FolderData[];
+  folders: FolderCardData[];
   parentName: string;
-  path: any[];
-  onRename: (folder: FolderData) => void;
+  path: PathItem[];
+  onRename: (folder: FolderCardData) => void;
   onDelete: (id: string) => void;
 }
 
@@ -44,7 +39,7 @@ export const FolderGrid: React.FC<FolderGridProps> = ({
     );
   }
 
-  const folderBasePath = ['My Drive', ...path.map((item: { name: string }) => item.name), parentName]
+  const folderBasePath = ['My Drive', ...path.map((item) => item.name), parentName]
     .filter(Boolean)
     .join('/');
 

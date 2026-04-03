@@ -1,19 +1,15 @@
 import React from 'react';
-import { FileCard } from './FileCard';
+import { FileCard, type FileData } from './FileCard';
 
-interface FileData {
+interface PathItem {
   _id: string;
   name: string;
-  extension: string;
-  createdAt?: string;
-  size?: number;
-  id: string;
 }
 
 interface FileGridProps {
   files: FileData[];
   parentName: string;
-  path: any[];
+  path: PathItem[];
   onRename: (file: FileData) => void;
   onDelete: (id: string) => void;
   onOpen: (id: string) => void;

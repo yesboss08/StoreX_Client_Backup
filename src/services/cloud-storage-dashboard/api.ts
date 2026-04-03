@@ -51,7 +51,7 @@ class ApiService {
    * Handle API errors and switch to demo mode when appropriate
    * Requirement 3.3: Handle 401, 403, and network errors
    */
-  private handleError(error: AxiosError): Promise<any> {
+  private handleError(error: AxiosError): Promise<unknown> {
     // Check if error is 401, 403, or network error
     if (
       error.response?.status === 401 ||
@@ -85,7 +85,7 @@ class ApiService {
       }
       
       return response.data;
-    } catch (error) {
+    } catch {
       // Fallback to mock data on any error
       this.isDemoMode = true;
       console.warn('Failed to fetch storage data, using mock data');
@@ -109,7 +109,7 @@ class ApiService {
       }
       
       return response.data;
-    } catch (error) {
+    } catch {
       // Fallback to mock data on any error
       this.isDemoMode = true;
       console.warn('Failed to fetch folders data, using mock data');
@@ -141,7 +141,7 @@ class ApiService {
       }
       
       return response.data;
-    } catch (error) {
+    } catch {
       // Fallback to mock data on any error
       this.isDemoMode = true;
       console.warn('Failed to fetch files data, using mock data');
@@ -169,7 +169,7 @@ class ApiService {
       }
       
       return response.data;
-    } catch (error) {
+    } catch {
       // Fallback to mock data on any error
       this.isDemoMode = true;
       console.warn('Failed to fetch user data, using mock data');

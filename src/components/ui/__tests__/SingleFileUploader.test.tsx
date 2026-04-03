@@ -9,15 +9,15 @@ const mockXHR = {
   abort: vi.fn(),
   setRequestHeader: vi.fn(),
   upload: {
-    onprogress: null as any,
+    onprogress: null as ((this: XMLHttpRequestUpload, ev: ProgressEvent<EventTarget>) => void) | null,
   },
-  onload: null as any,
-  onerror: null as any,
-  onabort: null as any,
+  onload: null as ((this: XMLHttpRequest, ev: ProgressEvent<EventTarget>) => void) | null,
+  onerror: null as ((this: XMLHttpRequest, ev: ProgressEvent<EventTarget>) => void) | null,
+  onabort: null as ((this: XMLHttpRequest, ev: ProgressEvent<EventTarget>) => void) | null,
   withCredentials: false,
   status: 200,
   responseText: '{"message": "Upload successful"}',
-}
+} as unknown as XMLHttpRequest;
 
 // Mock XMLHttpRequest
 Object.defineProperty(window, 'XMLHttpRequest', {
@@ -98,8 +98,9 @@ describe('SingleFileUploader', () => {
       total: 100,
     }
     
-    if (mockXHR.upload.onprogress) {
-      mockXHR.upload.onprogress(progressEvent)
+    const uploadProgressHandler = mockXHR.upload.onprogress as unknown as ((ev: ProgressEvent<EventTarget>) => void) | null
+    if (uploadProgressHandler) {
+      uploadProgressHandler(progressEvent as ProgressEvent<EventTarget>)
     }
     
     await waitFor(() => {
@@ -118,7 +119,7 @@ describe('SingleFileUploader', () => {
     
     // Simulate successful upload
     if (mockXHR.onload) {
-      mockXHR.onload()
+      mockXHR.onload.call(mockXHR, new ProgressEvent('load'))
     }
     
     await waitFor(() => {
@@ -158,7 +159,7 @@ describe('SingleFileUploader', () => {
     
     // Simulate error
     if (mockXHR.onerror) {
-      mockXHR.onerror()
+      mockXHR.onerror.call(mockXHR, new ProgressEvent('error'))
     }
     
     await waitFor(() => {

@@ -18,7 +18,7 @@ export interface UploadOptions {
   file: File;
   url: string;
   onProgress?: (progress: UploadProgress) => void;
-  onComplete?: (response: any) => void;
+  onComplete?: (response: unknown) => void;
   onError?: (error: Error) => void;
   signal?: AbortSignal;
   headers?: Record<string, string>;
@@ -27,7 +27,7 @@ export interface UploadOptions {
 
 export interface UploadResult {
   xhr: XMLHttpRequest;
-  promise: Promise<any>;
+  promise: Promise<unknown>;
   abort: () => void;
 }
 
@@ -58,7 +58,7 @@ export function uploadFile(options: UploadOptions): UploadResult {
           const response = xhr.responseText ? JSON.parse(xhr.responseText) : {};
           onComplete?.(response);
           resolve(response);
-        } catch (error) {
+        } catch {
           const parseError = new Error('Invalid JSON response');
           onError?.(parseError);
           reject(parseError);
@@ -114,7 +114,7 @@ export function uploadFile(options: UploadOptions): UploadResult {
 }
 
 // Fallback to fetch if XHR is not available (rare, but good practice)
-export async function uploadFileWithFetch(options: UploadOptions): Promise<any> {
+export async function uploadFileWithFetch(options: UploadOptions): Promise<unknown> {
   const { file, url, onComplete, onError, signal, headers = {}, withCredentials = true } = options;
   
   const formData = new FormData();

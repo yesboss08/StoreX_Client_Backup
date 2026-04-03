@@ -10,7 +10,43 @@ export default function AllPlan() {
   const [selected, setSelected] = useState('plan_pro_demo');
  const [isLoading , setIsLoading] = useState<boolean>(false)
 
-  const [ plans , setPlans] = useState<any>([])
+  type Plan = {
+    plan_id: string;
+    name: string;
+    price: number | string;
+    period: string;
+    storage: string;
+    features: string[];
+    userPerchased?: boolean;
+    notes?: {
+      planName?: string;
+    };
+  };
+
+  type RazorpayPaymentResponse = {
+    razorpay_payment_id?: string;
+    razorpay_subscription_id?: string;
+    razorpay_signature?: string;
+  };
+
+  type RazorpayOptions = {
+    key: string;
+    subscription_id: string;
+    name: string;
+    description?: string;
+    handler: (response: RazorpayPaymentResponse) => void;
+    theme?: { color: string };
+  };
+
+  type RazorpayInstance = {
+    open: () => void;
+  };
+
+  type RazorpayWindow = Window & {
+    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
+  };
+
+  const [ plans , setPlans] = useState<Plan[]>([])
 
   const GetAllPlans = async()=>{
     const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/razorpay/plans`,{credentials:"include"})
@@ -46,11 +82,17 @@ const CreateNewSubScription = async(planid:string)=>{
    })
   const json = await data.json()
   setIsLoading(false)
-  const razorpay = new (window as any).Razorpay({
+  const RazorpayConstructor = (window as unknown as RazorpayWindow).Razorpay;
+  if (!RazorpayConstructor) {
+    setIsLoading(false);
+    toast.error("Razorpay not available. Please try again.");
+    return;
+  }
+  const razorpay = new RazorpayConstructor({
     key: "rzp_test_RUWjBPx6hUebvc",
     subscription_id:json?.id,name: "StoreX.",
   description:json.notes.planName,
-  handler:async (response:any) => {
+  handler:async (response: RazorpayPaymentResponse) => {
     setIsLoading(true)
     if(response?.razorpay_payment_id){
   const isSuccess = await handleSUcessPayment(response)
@@ -68,13 +110,17 @@ const CreateNewSubScription = async(planid:string)=>{
 
 const navigate = useNavigate()
 
-const handleSUcessPayment =async(response:any)=>{
+const handleSUcessPayment =async(response: RazorpayPaymentResponse)=>{
   console.log(response)
  const subId = response?.razorpay_subscription_id
  if(!subId) return false
+const headers: Record<string, string> = { "Content-Type": "application/json" };
+if (response.razorpay_signature) {
+  headers.razorpay_signature = response.razorpay_signature;
+}
 const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/razorpay/verifySubscriptioPayment`,{
   method:"POST", credentials:"include", body:JSON.stringify(response),
-   headers: { "Content-Type": "application/json",'razorpay_signature':response.razorpay_signature}
+   headers
 })
 if(res.status==201) return true
 return false
@@ -145,7 +191,7 @@ toast.success("payment failed ❌🌹")
 
         {/* Pricing cards */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {plans.map((plan: any) => {
+          {plans.map((plan) => {
             if(plan.period!=billing) return null
            // const price = billing === 'monthly' ? monthly : yearly;
             const period = billing === 'monthly' ? 'month' : 'year';
@@ -156,7 +202,7 @@ toast.success("payment failed ❌🌹")
                 role="button"
                 tabIndex={0}
                 onClick={() => !plan.userPerchased && setSelected(plan.plan_id)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSelected(plan.id); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSelected(plan.plan_id); }}
                 className={`relative rounded-2xl p-6 md:p-8 shadow-2xl border cursor-pointer flex flex-col justify-between transition-transform focus:outline-none focus:ring-4 ${
                   isSelected
                     ? 'scale-105 ring-amber-400/30 bg-gradient-to-b from-amber-700/30 via-amber-600/20 to-amber-400/10 border-amber-400/40'
@@ -207,7 +253,7 @@ toast.success("payment failed ❌🌹")
                 </div>
 
                 <ul className={`mt-5 space-y-3 ${isSelected ? 'text-amber-100' : 'text-slate-200'}`}>
-                  {plan.features.map((f: any, i: number) => (
+                  {plan.features.map((f, i: number) => (
                     <li key={i} className="flex items-center gap-3">
                       <svg className={`h-5 w-5 flex-shrink-0 ${isSelected ? 'text-amber-300' : 'text-emerald-400'}`} viewBox="0 0 20 20" fill="currentColor" aria-hidden>
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414L8.414 15l-4.121-4.121a1 1 0 011.414-1.414L8.414 12.172l7.879-7.879a1 1 0 011.414 0z" clipRule="evenodd" />

@@ -10,7 +10,6 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { formatFileSize, getFileIcon, formatRelativeTime, getInitials } from './fileUtils';
-import type { FileType } from '../../types';
 
 describe('formatFileSize', () => {
   it('should format bytes correctly', () => {
@@ -110,9 +109,9 @@ describe('formatRelativeTime', () => {
     vi.setSystemTime(new Date('2024-01-17T15:00:00Z'));
   });
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  // afterEach(() => {
+  //   vi.useRealTimers();
+  // });
 
   it('should return "Just now" for dates within the last minute', () => {
     expect(formatRelativeTime('2024-01-17T14:59:30Z')).toBe('Just now');

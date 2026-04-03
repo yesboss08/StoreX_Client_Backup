@@ -8,7 +8,7 @@ interface FolderMember {
   avatar?: string;
 }
 
-interface FolderCardData {
+export interface FolderCardData {
   id?: string;
   _id?: string;
   name: string;
