@@ -13,19 +13,18 @@ import {
   LogOut, 
   Plus,
   FolderPlus,
-  FileText,
-  FileSpreadsheet,
-  Presentation,
-  MoreHorizontal
+  FileText
 } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 
 interface SidebarProps {
   isCollapsed?: boolean;
   onToggle?: () => void;
+  onCreateFolder?: () => void;
+  onCreateFile?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onCreateFolder, onCreateFile }) => {
   const { theme } = useTheme();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
@@ -113,7 +112,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle 
                   : 'bg-[#4F46E5] text-white hover:bg-[#4338ca]'
               }`}
             >
-              <span className="flex items-center gap-2">Create new</span>
+              <span className="flex items-center gap-2">Create now</span>
               <Plus className={`w-5 h-5 transition-transform ${isCreateOpen ? 'rotate-45' : ''}`} />
             </button>
 
@@ -123,21 +122,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle 
                   ? 'bg-white/95 border-gray-100 text-gray-700' 
                   : 'bg-gray-800/95 border-gray-700 text-gray-200'
               }`}>
-                <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm font-medium">
-                  <FolderPlus className="w-4 h-4" /> Folder
+                <button
+                  onClick={() => {
+                    setIsCreateOpen(false);
+                    onCreateFolder?.();
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm font-medium"
+                >
+                  <FolderPlus className="w-4 h-4" /> New folder
                 </button>
-                <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm font-medium">
-                  <FileText className="w-4 h-4" /> Text file
-                </button>
-                <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm font-medium">
-                  <FileSpreadsheet className="w-4 h-4" /> Sheet
-                </button>
-                <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm font-medium">
-                  <Presentation className="w-4 h-4" /> Presentation
-                </button>
-                <div className="h-px bg-black/5 dark:bg-white/5 my-1" />
-                <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm font-medium">
-                  <MoreHorizontal className="w-4 h-4" /> More
+                <button
+                  onClick={() => {
+                    setIsCreateOpen(false);
+                    onCreateFile?.();
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm font-medium"
+                >
+                  <FileText className="w-4 h-4" /> New file
                 </button>
               </div>
             )}

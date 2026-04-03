@@ -39,7 +39,28 @@ export const FileCard: React.FC<FileCardProps> = ({
 
   const getFileIcon = () => {
     // You can expand this to show different icons based on file type
-    return <DocumentIcon className="w-12 h-12 text-gray-600 dark:text-gray-400" />;
+    return <DocumentIcon className="w-10 h-10 text-current" />;
+  };
+
+  const getFileBadgeStyle = () => {
+    const ext = file.extension?.replace('.', '').toLowerCase();
+    switch (ext) {
+      case 'pdf':
+        return 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-300';
+      case 'doc':
+      case 'docx':
+        return 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-300';
+      case 'xls':
+      case 'xlsx':
+        return 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-300';
+      case 'ppt':
+      case 'pptx':
+        return 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-300';
+      case 'zip':
+        return 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-300';
+      default:
+        return 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300';
+    }
   };
 
   const formatFileSize = (bytes?: number) => {
@@ -75,7 +96,7 @@ export const FileCard: React.FC<FileCardProps> = ({
       <Card 
         variant="elevated" 
         padding="md"
-        className="group hover:scale-105 transition-all duration-200 relative"
+        className="group hover:-translate-y-0.5 transition-all duration-200 relative rounded-2xl"
       >
 
       {/* Menu Button */}
@@ -117,13 +138,18 @@ export const FileCard: React.FC<FileCardProps> = ({
       </div>
 
       {/* File Content */}
-      <div className="flex flex-col items-center space-y-3">
-        <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
-          {getFileIcon()}
+      <div className="flex flex-col space-y-4">
+        <div className="flex items-start justify-between">
+          <div className={`p-2.5 rounded-xl ${getFileBadgeStyle()}`}>
+            {getFileIcon()}
+          </div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+            {file.extension?.replace('.', '') || 'file'}
+          </div>
         </div>
-        
-        <div className="text-center w-full">
-          <h3 className="font-medium text-gray-900 dark:text-white truncate">
+
+        <div>
+          <h3 className="font-semibold text-gray-900 dark:text-white truncate">
             {`${file.name}${file.extension}`}
           </h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">

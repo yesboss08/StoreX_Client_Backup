@@ -53,8 +53,8 @@ export interface Folder {
   name: string;
   /** Number of files contained in the folder */
   fileCount: number;
-  /** Array of members who have access to the folder */
-  members: Member[];
+  /** Array of members who have access to the folder (optional if not provided) */
+  members?: Member[];
   /** ISO 8601 timestamp when the folder was created */
   createdAt: string;
   /** ISO 8601 timestamp when the folder was last updated */
@@ -73,8 +73,8 @@ export interface File {
   type: FileType;
   /** File size in bytes */
   sizeBytes: number;
-  /** Array of members who have access to the file */
-  members: Member[];
+  /** Array of members who have access to the file (optional if not provided) */
+  members?: Member[];
   /** ISO 8601 timestamp when the file was last modified */
   lastModified: string;
   /** Optional URL to access or download the file */

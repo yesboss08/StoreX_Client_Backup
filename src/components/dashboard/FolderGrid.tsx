@@ -5,7 +5,10 @@ interface FolderData {
   _id: string;
   name: string;
   createdAt?: string;
+  updatedAt?: string;
   size?: number;
+  members?: any[];
+  fileCount?: number;
 }
 
 interface FolderGridProps {
@@ -41,6 +44,10 @@ export const FolderGrid: React.FC<FolderGridProps> = ({
     );
   }
 
+  const folderBasePath = ['My Drive', ...path.map((item: { name: string }) => item.name), parentName]
+    .filter(Boolean)
+    .join('/');
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -57,8 +64,7 @@ export const FolderGrid: React.FC<FolderGridProps> = ({
           <FolderCard
             key={folder._id}
             folder={folder}
-            parentName={parentName}
-            path={path}
+            path={folderBasePath ? `${folderBasePath}/${folder.name}` : undefined}
             onRename={onRename}
             onDelete={onDelete}
           />

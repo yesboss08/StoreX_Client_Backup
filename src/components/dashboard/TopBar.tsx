@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Search, Moon, Sun, Bell } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { User } from '../../types';
+import { UserMenu } from './UserMenu';
 
 interface TopBarProps {
   user?: User;
@@ -9,6 +10,19 @@ interface TopBarProps {
 
 export const TopBar: React.FC<TopBarProps> = ({ user }) => {
   const { theme, toggleTheme } = useTheme();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  const menuUserInfo = {
+    name: user?.name || 'Demo User',
+    email: user?.email || 'demo@cloudrive.test',
+    emailVarified: true,
+    role: 'user' as const,
+    isSubscribed: false,
+  };
+
+  const handleLogout = () => {
+    setIsUserMenuOpen(false);
+  };
 
   return (
     <div className="h-20 px-8 flex items-center justify-between shrink-0">
@@ -52,16 +66,27 @@ export const TopBar: React.FC<TopBarProps> = ({ user }) => {
         
         <div className="w-px h-8 bg-gray-200 dark:bg-gray-700 mx-2" />
 
-        <div className="flex items-center gap-3 cursor-pointer">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 p-0.5">
-             <img 
-               src={user?.avatar || "https://i.pravatar.cc/150?img=3"} 
-               alt={user?.name || "User"} 
-               className={`w-full h-full rounded-full object-cover border-2 ${
-                 theme === 'light' ? 'border-white' : 'border-gray-900'
-               }`}
-             />
-          </div>
+        <div className="relative">
+          <button
+            onClick={() => setIsUserMenuOpen((prev) => !prev)}
+            className="flex items-center gap-3 cursor-pointer"
+          >
+            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 p-0.5">
+              <img 
+                src={user?.avatar || "https://i.pravatar.cc/150?img=3"} 
+                alt={user?.name || "User"} 
+                className={`w-full h-full rounded-full object-cover border-2 ${
+                  theme === 'light' ? 'border-white' : 'border-gray-900'
+                }`}
+              />
+            </div>
+          </button>
+          <UserMenu
+            userInfo={menuUserInfo}
+            isOpen={isUserMenuOpen}
+            onClose={() => setIsUserMenuOpen(false)}
+            onLogout={handleLogout}
+          />
         </div>
       </div>
     </div>
