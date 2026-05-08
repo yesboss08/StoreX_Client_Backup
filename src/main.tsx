@@ -4,7 +4,7 @@ import App from './App.tsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import DirectoryData from './DirectoryData.tsx'
 import Login from './component/Login.tsx'
-import Signup from './component/Signup.tsx'
+import { Signup } from './pages/Signup.tsx'
 import VerifyEmail from './component/VerifyEmail.tsx'
 import Allusers from './component/Allusers.tsx'
 import { Provider } from 'react-redux'
@@ -18,6 +18,7 @@ import { Toaster } from 'react-hot-toast'
 import ManageSubscription from './component/ManageSubscription.tsx'
 import { ThemeProvider } from './contexts/ThemeContext.tsx'
 import { Landing } from './pages/Landing.tsx'
+import { YoLanding } from './pages/YoLanding.tsx'
 import { PrivacyPolicy } from './pages/PrivacyPolicy.tsx'
 import { TermsOfService } from './pages/TermsOfService.tsx'
 import { Roadmap } from './pages/Roadmap.tsx'
@@ -44,6 +45,7 @@ createRoot(document.getElementById('root')!).render(
           />
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/yo" element={<YoLanding />} />
             <Route path="/app" element={<App />} />
             <Route path='/login' element={<Login />}></Route>
             <Route path='/signup' element={<Signup />}></Route>
